@@ -2,14 +2,14 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        /*NetHandler handler = new NetHandler();
-        Gui gui = new Gui();
-        handler.setGui(gui);*/
-        Gui gui = new Gui();
-        gui.makeVisible();
-        PortalNetHunter portalNetHunter = new PortalNetHunter("9631049", "0371964660");
+        //   PortalGui gui = new PortalGui();
 
-        portalNetHunter.start();
+//        PortalNetHunter portalNetHunter = new PortalNetHunter("9631049", "0371964660");
+
+        //    portalNetHunter.projectDawn();
+
+        SamadFinder finder = new SamadFinder();
+        finder.run();
 
        /* try {
             handler.start();
