@@ -507,21 +507,22 @@ public class PortalNetHunter implements Runnable {
             BufferedReader reader = new BufferedReader(new FileReader("captcha.txt"));
             captcha = reader.readLine();
             System.out.println("READ CAPTCHA : " + captcha);
-            getCaptcha();
-            try {
+          //  getCaptcha();
+/*            try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             sendLogin();
-            try {
+        /*    try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            getTopStudent();
+            }*/
+        //    getTopStudent();
+            getPersonal();
             handleRequest("u_math");
-            System.exit(0);
+            //System.exit(0);
         }
     }
 

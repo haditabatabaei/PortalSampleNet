@@ -21,16 +21,21 @@ public class NetHandler implements ActionListener {
         this.gui = gui;
         executorService = Executors.newCachedThreadPool();
         portalNetHunter = new PortalNetHunter("9631049", "0371964660");
-        try {
-            portalNetHunter.startSamad();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            portalNetHunter.startSamad();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         try {
             portalNetHunter.init();
       //      System.exit(0);
             gui.getCaptchaImageField().setIcon(new ImageIcon("captcha.jpg"));
             gui.getSamadCaptchaLabelImage().setIcon(new ImageIcon("sCaptcha.jpg"));
+            gui.revalidate();
+            gui.getNameLabelInfo().setText(portalNetHunter.getPortalFulLName());
+            gui.getEmailLabelInfo().setText(portalNetHunter.getEmail());
+            gui.getIdNumLabelInfo().setText(portalNetHunter.getIdNum());
+            gui.getPhoneLabelInfo().setText(portalNetHunter.getPhone());
             gui.revalidate();
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,11 +56,11 @@ public class NetHandler implements ActionListener {
                 portalNetHunter.setCaptcha(gui.getCaptchaField().getText());
                 try {
                     portalNetHunter.start();
-                  //  gui.getNameLabelInfo().setText(portalNetHunter.getPortalFulLName());
-                   // gui.getEmailLabelInfo().setText(portalNetHunter.getEmail());
-                   // gui.getIdNumLabelInfo().setText(portalNetHunter.getIdNum());
-                   // gui.getPhoneLabelInfo().setText(portalNetHunter.getPhone());
-                   // gui.revalidate();
+                    gui.getNameLabelInfo().setText(portalNetHunter.getPortalFulLName());
+                    gui.getEmailLabelInfo().setText(portalNetHunter.getEmail());
+                    gui.getIdNumLabelInfo().setText(portalNetHunter.getIdNum());
+                    gui.getPhoneLabelInfo().setText(portalNetHunter.getPhone());
+                    gui.revalidate();
                     portalNetHunter.getChooseCourses();
                     StringBuilder message = new StringBuilder();
                     for (int i = 0; i < portalNetHunter.getCoursesName().size(); i++) {
