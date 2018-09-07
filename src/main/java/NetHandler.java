@@ -13,6 +13,10 @@ public class NetHandler implements ActionListener {
     private ExecutorService executorService;
     private PortalNetHunter portalNetHunter;
 
+    public PortalNetHunter getPortalNetHunter() {
+        return portalNetHunter;
+    }
+
     public NetHandler(PortalGui gui) {
         this.gui = gui;
         executorService = Executors.newCachedThreadPool();
@@ -24,6 +28,7 @@ public class NetHandler implements ActionListener {
         }
         try {
             portalNetHunter.init();
+      //      System.exit(0);
             gui.getCaptchaImageField().setIcon(new ImageIcon("captcha.jpg"));
             gui.getSamadCaptchaLabelImage().setIcon(new ImageIcon("sCaptcha.jpg"));
             gui.revalidate();
@@ -46,17 +51,18 @@ public class NetHandler implements ActionListener {
                 portalNetHunter.setCaptcha(gui.getCaptchaField().getText());
                 try {
                     portalNetHunter.start();
-                    gui.getNameLabelInfo().setText(portalNetHunter.getPortalFulLName());
-                    gui.getEmailLabelInfo().setText(portalNetHunter.getEmail());
-                    gui.getIdNumLabelInfo().setText(portalNetHunter.getIdNum());
-                    gui.getPhoneLabelInfo().setText(portalNetHunter.getPhone());
-                    gui.revalidate();
-                    portalNetHunter.getCourses();
+                  //  gui.getNameLabelInfo().setText(portalNetHunter.getPortalFulLName());
+                   // gui.getEmailLabelInfo().setText(portalNetHunter.getEmail());
+                   // gui.getIdNumLabelInfo().setText(portalNetHunter.getIdNum());
+                   // gui.getPhoneLabelInfo().setText(portalNetHunter.getPhone());
+                   // gui.revalidate();
+                    portalNetHunter.getChooseCourses();
                     StringBuilder message = new StringBuilder();
                     for (int i = 0; i < portalNetHunter.getCoursesName().size(); i++) {
-                        message.append(portalNetHunter.getCoursesName().get(i) + " | Score : " + portalNetHunter.getScores().get(i) + "\n");
+                        //     message.append(portalNetHunter.getCoursesName().get(i) + " | Score : " + portalNetHunter.getScores().get(i) + "\n");
                     }
-                    gui.insertScores(portalNetHunter.getCoursesName(), portalNetHunter.getScores());
+                    //      gui.insertScores(portalNetHunter.getCoursesName(), portalNetHunter.getScores());
+                    gui.insertInfo(portalNetHunter.getCoursesName(), portalNetHunter.getProfessors(), portalNetHunter.getFirstTimes(), portalNetHunter.getSecondTimes(), portalNetHunter.getExamTimes());
                     //  JOptionPane.showMessageDialog(null, message.toString());
                 } catch (IOException e1) {
                     e1.printStackTrace();

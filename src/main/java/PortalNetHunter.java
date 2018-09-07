@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -32,12 +33,20 @@ public class PortalNetHunter implements Runnable {
     private String phone;
     private ArrayList<String> coursesName;
     private ArrayList<Float> scores;
+    private ArrayList<String> professors;
+    private ArrayList<String> firstTimes;
+    private ArrayList<String> secondTimes;
+    private ArrayList<String> examTimes;
 
     public PortalNetHunter(String username, String password) {
         this.username = username;
         this.password = password;
         coursesName = new ArrayList<>();
         scores = new ArrayList<>();
+        professors = new ArrayList<>();
+        firstTimes = new ArrayList<>();
+        secondTimes = new ArrayList<>();
+        examTimes = new ArrayList<>();
     }
 
     public void setSessionId(String sessionId) {
@@ -115,12 +124,13 @@ public class PortalNetHunter implements Runnable {
     public void start() throws IOException {
         sendLogin();
         //getTopStudent();
-        getPersonal();
+        // getPersonal();
     }
 
     public void init() throws IOException {
         getSessionId();
         getCaptcha();
+
     }
 
     public void getCourses() throws IOException {
@@ -159,6 +169,7 @@ public class PortalNetHunter implements Runnable {
             coursesName.add(course);
             scores.add(courseScore);
         }
+        // getChooseCourses();
     }
 
     public ArrayList<Float> getScores() {
@@ -167,6 +178,202 @@ public class PortalNetHunter implements Runnable {
 
     public ArrayList<String> getCoursesName() {
         return coursesName;
+    }
+
+    public ArrayList<String> getProfessors() {
+        return professors;
+    }
+
+    public ArrayList<String> getFirstTimes() {
+        return firstTimes;
+    }
+
+    public ArrayList<String> getSecondTimes() {
+        return secondTimes;
+    }
+
+    public ArrayList<String> getExamTimes() {
+        return examTimes;
+    }
+
+    private void clearAllLists() {
+        coursesName.clear();
+        professors.clear();
+        firstTimes.clear();
+        secondTimes.clear();
+        examTimes.clear();
+    }
+
+    public void handleComboSelection(int selectionNum) throws IOException {
+        clearAllLists();
+        switch (selectionNum) {
+            case 0:
+                System.out.println("fuck 0");
+                handleRequest("u_mine_all");
+                break;
+            case 1:
+                System.out.println("fuck 1");
+                handleRequest("u_pre_register");
+                break;
+            case 2:
+                System.out.println("fuck 2");
+                handleRequest("u_math");
+                break;
+            case 3:
+                System.out.println("fuck 3");
+                handleRequest("u_phys");
+                break;
+            case 4:
+                System.out.println("fuck 4");
+                handleRequest("u_physlab1");
+
+                break;
+            case 5:
+                System.out.println("fuck 5");
+                handleRequest("u_physlab2");
+
+                break;
+            case 6:
+                System.out.println("fuck 6");
+                handleRequest("u_serv");
+
+                break;
+            case 7:
+                System.out.println("fuck 7");
+                handleRequest("u_english");
+
+                break;
+            case 8:
+                System.out.println("fuck 8");
+                handleRequest("u_history");
+
+                break;
+            case 9:
+                System.out.println("fuck 9");
+                handleRequest("u_andishe");
+
+                break;
+            case 10:
+                System.out.println("fuck 10");
+                handleRequest("u_persian");
+
+                break;
+            case 11:
+                System.out.println("fuck 11");
+                handleRequest("u_akhlagh");
+
+                break;
+            case 12:
+                System.out.println("fuck 12");
+                handleRequest("u_revel");
+
+                break;
+            case 13:
+                System.out.println("fuck 13");
+                handleRequest("u_tafsir");
+
+                break;
+            case 14:
+                System.out.println("fuck 14");
+                handleRequest("u_phyedu1");
+                break;
+            case 15:
+                System.out.println("fuck 15");
+                handleRequest("u_phyedu2");
+                break;
+        }
+    }
+
+    private void handleRequest(String portalSubInfo) throws IOException {
+        URL personalUrl = new URL(PORTAL_HOST_HTTPS + "/aportal/regadm/student.portal/student.portal.jsp?action=edit&st_info=register&st_sub_info=" + portalSubInfo);
+        HttpsURLConnection personalConnection = (HttpsURLConnection) personalUrl.openConnection();
+        personalConnection.setRequestProperty("Cookie", "JSESSIONID=" + sessionId + "; _ga=GA1.3.1786734947.1535188347; _gid=GA1.3.1828509133.1535188347");
+        File personalFile = new File("coursesChoose.jsp");
+        File personalFileHtml = new File("coursesHtmlChoose.html");
+        personalFile.createNewFile();
+        personalFileHtml.createNewFile();
+        int responseCode = personalConnection.getResponseCode();
+        System.out.println("Personal response code : " + responseCode);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(personalConnection.getInputStream()));
+        String line;
+        StringBuilder response = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            response.append(line);
+       /*     if (line.startsWith("<td class=toptrc nowrap><font color=white size=\"+1\">")) {
+                System.out.println("----------------\n" + line + "------------\n");
+                portalFulLName = line.replace("<td class=toptrc nowrap><font color=white size=\"+1\">", "").replace("</font></td>", "");
+            }*/
+        }
+        FileWriter personalWriter = new FileWriter(personalFile);
+        FileWriter personalHtmlWriter = new FileWriter(personalFileHtml);
+        personalWriter.write(response.toString());
+        personalHtmlWriter.write(response.toString());
+        personalWriter.close();
+        personalHtmlWriter.close();
+        Document coursesDoc = Jsoup.parse(personalFileHtml, "UTF-8");
+        Elements elements = coursesDoc.getElementsByAttributeValue("class", "gridtr");
+        for (int i = 0; i < elements.size(); i++) {
+            Element onHoldElement = elements.get(i);
+            String course = onHoldElement.select("td.gridtic").get(1).text();
+            //  float courseScore = Float.parseFloat(onHoldElement.select("td.gridtic").get(8).text());
+            String professor = onHoldElement.select("td.gridtic").get(7).text();
+            String firstTime = onHoldElement.select("td.gridtic").get(8).text();
+            String secondTime = onHoldElement.select("td.gridtic").get(9).text();
+            String examTime = onHoldElement.select("td.gridtic").get(11).text();
+            coursesName.add(course);
+            professors.add(professor);
+            firstTimes.add(firstTime);
+            secondTimes.add(secondTime);
+            examTimes.add(examTime);
+            //scores.add(courseScore);
+        }
+    }
+
+    public void getChooseCourses() throws IOException {
+        URL personalUrl = new URL(PORTAL_HOST_HTTPS + "/aportal/regadm/student.portal/student.portal.jsp?action=edit&st_info=register&st_sub_info=u_mine_all");
+        HttpsURLConnection personalConnection = (HttpsURLConnection) personalUrl.openConnection();
+        personalConnection.setRequestProperty("Cookie", "JSESSIONID=" + sessionId + "; _ga=GA1.3.1786734947.1535188347; _gid=GA1.3.1828509133.1535188347");
+        File personalFile = new File("coursesChoose.jsp");
+        File personalFileHtml = new File("coursesHtmlChoose.html");
+        personalFile.createNewFile();
+        personalFileHtml.createNewFile();
+        int responseCode = personalConnection.getResponseCode();
+        System.out.println("Personal response code : " + responseCode);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(personalConnection.getInputStream()));
+        String line;
+        StringBuilder response = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            //    System.out.println(line);
+            response.append(line);
+       /*     if (line.startsWith("<td class=toptrc nowrap><font color=white size=\"+1\">")) {
+                System.out.println("----------------\n" + line + "------------\n");
+                portalFulLName = line.replace("<td class=toptrc nowrap><font color=white size=\"+1\">", "").replace("</font></td>", "");
+            }*/
+        }
+        FileWriter personalWriter = new FileWriter(personalFile);
+        FileWriter personalHtmlWriter = new FileWriter(personalFileHtml);
+        personalWriter.write(response.toString());
+        personalHtmlWriter.write(response.toString());
+        personalWriter.close();
+        personalHtmlWriter.close();
+        Document coursesDoc = Jsoup.parse(personalFileHtml, "UTF-8");
+        Elements elements = coursesDoc.getElementsByAttributeValue("class", "gridtr");
+        for (int i = 0; i < elements.size(); i++) {
+            Element onHoldElement = elements.get(i);
+            String course = onHoldElement.select("td.gridtic").get(1).text();
+            //  float courseScore = Float.parseFloat(onHoldElement.select("td.gridtic").get(8).text());
+            String professor = onHoldElement.select("td.gridtic").get(7).text();
+            String firstTime = onHoldElement.select("td.gridtic").get(8).text();
+            String secondTime = onHoldElement.select("td.gridtic").get(9).text();
+            String examTime = onHoldElement.select("td.gridtic").get(11).text();
+            coursesName.add(course);
+            professors.add(professor);
+            firstTimes.add(firstTime);
+            secondTimes.add(secondTime);
+            examTimes.add(examTime);
+            //scores.add(courseScore);
+        }
     }
 
     private void getPersonal() throws IOException {
@@ -263,6 +470,7 @@ public class PortalNetHunter implements Runnable {
         URL portalCaptcha = new URL(PORTAL_HOST_HTTPS + "/aportal/PassImageServlet");
         HttpsURLConnection portalCaptchaConnection = (HttpsURLConnection) portalCaptcha.openConnection();
         portalCaptchaConnection.setRequestProperty("Cookie", "JSESSIONID=" + sessionId + "; _ga=GA1.3.1786734947.1535188347; _gid=GA1.3.1828509133.1535188347");
+        portalCaptchaConnection.setRequestProperty("User-Agent","Mozilla/5.0");
         int captchaResponse = portalCaptchaConnection.getResponseCode();
         if (captchaResponse == HTTP_OK) {
             System.out.println("Captcha response ok");
@@ -272,6 +480,8 @@ public class PortalNetHunter implements Runnable {
             ImageIO.write(bufferedImage, "jpg", imageFile);
             System.out.println("Captcha Received.");
             System.out.println("Done");
+        }else{
+            System.out.println("CAPTCHA JAVA RESPONSE NOT OK " + portalCaptchaConnection.getResponseCode());
         }
     }
 
@@ -284,6 +494,34 @@ public class PortalNetHunter implements Runnable {
             System.out.println(portalSessionConnection.getHeaderFields());
             sessionId = portalSessionConnection.getHeaderField("Set-Cookie").split(";")[0].replace("JSESSIONID=", "");
             System.out.println("Session id : " + sessionId);
+            /* Handling captcha using python */
+            System.out.println("python hadi.py " + sessionId + " 20");
+            Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"python hadi.py " + sessionId + " 20\"");
+            System.out.println("Python Started");
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("WOKE UP");
+            BufferedReader reader = new BufferedReader(new FileReader("captcha.txt"));
+            captcha = reader.readLine();
+            System.out.println("READ CAPTCHA : " + captcha);
+            getCaptcha();
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendLogin();
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            getTopStudent();
+            handleRequest("u_math");
+            System.exit(0);
         }
     }
 

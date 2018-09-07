@@ -48,6 +48,7 @@ public class PortalGui extends JFrame {
         samadCaptchaLabel = new JLabel();
         samadCaptchaLabelImage = new JLabel();
         samadCaptchaField = new JTextField();
+        comboBox1 = new JComboBox();
 
         //======== this ========
         setResizable(false);
@@ -127,7 +128,7 @@ public class PortalGui extends JFrame {
             scrollPane1.setViewportView(panel1);
         }
         contentPane.add(scrollPane1);
-        scrollPane1.setBounds(355, 35, 400, 495);
+        scrollPane1.setBounds(355, 35, 625, 495);
 
         //---- studentNumToName ----
         studentNumToName.setText("\u0634\u0645\u0627\u0631\u0647 \u062f\u0627\u0646\u0634\u062c\u0648\u06cc\u06cc \u0628\u0632\u0646 \u0627\u0633\u0645 \u0628\u06af\u06cc\u0631");
@@ -163,8 +164,10 @@ public class PortalGui extends JFrame {
         samadCaptchaLabelImage.setBounds(195, 495, 55, 30);
         contentPane.add(samadCaptchaField);
         samadCaptchaField.setBounds(75, 500, 115, 20);
+        contentPane.add(comboBox1);
+        comboBox1.setBounds(35, 320, 175, comboBox1.getPreferredSize().height);
 
-        contentPane.setPreferredSize(new Dimension(800, 600));
+        contentPane.setPreferredSize(new Dimension(990, 600));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -180,6 +183,26 @@ public class PortalGui extends JFrame {
         loginButton.addActionListener(handler);
         findButton.addActionListener(handler);
         panelGridLayout = (GridLayout) panel1.getLayout();
+
+
+        comboBox1.addItem("دانشکده");
+        comboBox1.addItem("پیش ثبت نام");
+        comboBox1.addItem("ریاضیات");
+        comboBox1.addItem("فیزیک");
+        comboBox1.addItem("آز فیزیک 1");
+        comboBox1.addItem("آز فیزیک 2");
+        comboBox1.addItem("سرویس");
+        comboBox1.addItem("زبان");
+        comboBox1.addItem("تاریخ اسلام");
+        comboBox1.addItem("اندیشه اسلامی");
+        comboBox1.addItem("فارسی");
+        comboBox1.addItem("اخلاق اسلامی");
+        comboBox1.addItem("انقلاب");
+        comboBox1.addItem("تفسیر موضوعی");
+        comboBox1.addItem("تربیت 1");
+        comboBox1.addItem("تربیت 2");
+        comboBox1.addItemListener(new MyChangeListener(this, handler.getPortalNetHunter()));
+
 
         setVisible(true);
     }
@@ -215,6 +238,7 @@ public class PortalGui extends JFrame {
     private JLabel samadCaptchaLabel;
     private JLabel samadCaptchaLabelImage;
     private JTextField samadCaptchaField;
+    private JComboBox comboBox1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
     private GridLayout panelGridLayout;
 
@@ -232,6 +256,22 @@ public class PortalGui extends JFrame {
         }
     }
 
+
+    public void insertInfo(ArrayList<String> coursesNames, ArrayList<String> professors, ArrayList<String> firstTimes, ArrayList<String> secondTimes, ArrayList<String> examTimes) {
+        for (int i = 0; i < coursesNames.size(); i++) {
+            JPanel tempPanel = new JPanel(new BorderLayout());
+            JLabel courseMain = new JLabel(coursesNames.get(i) + " | " + professors.get(i));
+            JLabel times = new JLabel(firstTimes.get(i) + "\n" + secondTimes.get(i));
+            JLabel examTime = new JLabel(examTimes.get(i));
+            tempPanel.add(courseMain, BorderLayout.EAST);
+            tempPanel.add(times, BorderLayout.CENTER);
+            tempPanel.add(examTime, BorderLayout.WEST);
+            tempPanel.add(new JLabel("---------------------------------------------"), BorderLayout.SOUTH);
+            panelGridLayout.setRows(panelGridLayout.getRows() + 1);
+            panel1.add(tempPanel);
+            revalidate();
+        }
+    }
 
 
     public void clearScoreBoard() {
@@ -390,5 +430,9 @@ public class PortalGui extends JFrame {
 
     public void setPhoneLabelInfo(JLabel phoneLabelInfo) {
         this.phoneLabelInfo = phoneLabelInfo;
+    }
+
+    public JComboBox getComboBox1() {
+        return comboBox1;
     }
 }

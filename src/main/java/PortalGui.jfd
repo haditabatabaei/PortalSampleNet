@@ -155,7 +155,7 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 355
 				"y": 35
-				"width": 400
+				"width": 625
 				"height": 495
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
@@ -243,9 +243,16 @@ new FormModel {
 				"x": 75
 				"y": 500
 			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "comboBox1"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 35
+				"y": 320
+				"width": 175
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 100, 80 )
-			"size": new java.awt.Dimension( 800, 600 )
+			"size": new java.awt.Dimension( 990, 600 )
 		} )
 	}
 }
